@@ -405,6 +405,97 @@ This trigger type executes when a role is added to or removed from a member.
 
 - **Execution**: Cannot be triggered via `execCC` or `scheduleUniqueCC`.
 
+##### Slash Command
+
+This trigger type registers a native Discord [slash command](https://support.discord.com/hc/en-us/articles/26501837786775-Slash-Commands-FAQ) with your server.
+The command executes when a member runs `/your-command` in Discord, and any arguments the member supplies are made available to the response.
+
+Because slash commands are an [interaction](/docs/reference/custom-interactions), the command's response is sent as the reply to the interaction.
+You may make the reply ephemeral using the [Defer mode](#defer-mode) below or the [`ephemeralResponse`](/docs/reference/templates/functions#interactions) function, and you can send followups, modals, components, and so on just like other interaction triggers.
+
+###### Command Trigger
+
+For this trigger type, the **Trigger** (**4**) field is the slash command name (the `/name` members type in Discord).
+
+- Maximum 32 characters.
+- Lowercase letters, numbers, dashes (`-`) and underscores (`_`) only.
+- It cannot match the name of a built-in YAGPDB slash command.
+
+###### Description
+
+A slash command requires a **Description** (1–100 characters), shown to members in Discord's command picker.
+
+###### Options
+
+Slash commands may define up to **25 options** (arguments). Each option has a:
+
+- **Name**: 1–32 lowercase characters (letters, numbers, dashes, underscores). Must be unique within the command.
+- **Type**: see the table below.
+- **Description**: 1–100 characters.
+- **Required** toggle: required options are always asked for before optional ones.
+
+| Type          | Description                                                                                  |
+| ------------- | -------------------------------------------------------------------------------------------- |
+| Text          | A free-text string.                                                                          |
+| Text menu     | A string with a fixed set of **choices** the member picks from.                              |
+| Integer       | A whole number.                                                                              |
+| Integer menu  | An integer with a fixed set of **choices**.                                                  |
+| Number        | A decimal number.                                                                            |
+| Number menu   | A number with a fixed set of **choices**.                                                    |
+| True/False    | A boolean.                                                                                    |
+| User          | A member of the server.                                                                       |
+| Channel       | A channel in the server.                                                                      |
+| Role          | A role in the server.                                                                         |
+| User or Role  | A mentionable, i.e. either a user or a role.                                                  |
+
+Depending on the chosen type, an option exposes extra constraints:
+
+- **Menu types** (`Text menu`, `Integer menu`, `Number menu`): a **Choices** field, one choice per line (max 25 choices, each max 100 characters). For integer and number menus, every line must be a valid number. Menu options cannot also use the min/max constraints below.
+- **Text**: optional **Min length** and **Max length** (0–6000).
+- **Integer / Number**: optional **Min value** and **Max value**.
+- **Channel**: optional **Allowed channel types** to restrict which kinds of channels can be selected (Text, Voice, Category, Announcement, Stage, Forum, Public Thread, Private Thread, Announcement Thread). Leave empty to allow any.
+
+###### Accessing options in the response
+
+Option values are exposed to the response in two ways, plus the command name:
+
+| Field             | Description                                                                                                                          |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `.Options`        | An `SDict` keyed by option name, holding the value the member supplied for each option. Optional options the member omits are absent. |
+| `.Args`           | An ordered slice of the supplied values, with the **command name at index 0** followed by the provided option values.               |
+| `.CmdArgs`        | The same ordered values as `.Args` but **without** the command name (i.e. `.Args` from index 1 onward).                             |
+| `.CommandName` / `.Cmd` | The slash command name that was run.                                                                                         |
+| `.IsSlashCommand` | `true` when the command was triggered by a slash command.                                                                          |
+| `.Interaction`    | The triggering [interaction](/docs/reference/custom-interactions#parsing-an-interaction) object.                                   |
+| `.InteractionData`| The raw application command interaction data from Discord.                                                                          |
+
+Snowflake-typed options are resolved to full objects: a `User` (or chosen-user `User or Role`) option yields a user object, a `Channel` option a channel object, and a `Role` (or chosen-role `User or Role`) option a role object.
+
+```yag
+{{ $name := .Options.name }}
+{{ $target := .Options.target }}
+Hello {{ $target.Mention }}, {{ .User.Username }} says: {{ $name }}
+```
+
+{{< callout context="note" title="Note: No source message" icon="outline/info-circle" >}}
+
+A slash command interaction has no source message, so YAGPDB synthesizes a minimal one.
+`.User`, `.Member`, and member-dependent functions such as `addRoleID` work as usual, but message-specific data such as `.Message.Content` is not meaningful.
+
+{{< /callout >}}
+
+###### Defer mode
+
+Slash commands use the same [Defer mode](/docs/reference/custom-interactions#responding-to-an-interaction) options as other interaction triggers, except for **Update Message Response**, which is not available (there is no prior message to update).
+
+{{< callout context="caution" title="Warning: Slash command limits" icon="outline/info-circle" >}}
+
+Servers may have at most **3 enabled** slash command custom commands, raised to **10** on [premium](/docs/welcome/premium) servers.
+Only enabled commands are registered with Discord and count against this limit.
+If premium is removed and you are over the limit, only the lowest-ID commands remain registered.
+
+{{< /callout >}}
+
 #### Case Sensitivity
 
 Any commands which allow you to specify trigger text (command, regex, exact match, and so on) have a **Case sensitivity** toggle (**5**) which is off by default.

@@ -44,7 +44,7 @@ A premium server unlocks the following benefits:
 
 - Enable triggering on edited messages instead of only new messages.
 - Increase max commands which can trigger from a single interaction from 3 to 5 (`CCMessageExecLimitPremium`).
-- Increase max commands from 100 to 250 (`MaxCommandsPremium`).
+- Increase max commands from 100 to 500 (`MaxCommandsPremium`).
 - Increase max combined response length per cc from 10,000 to 20,000 (`MaxCCResponsesLength`).
 
 ### Logging Messages
