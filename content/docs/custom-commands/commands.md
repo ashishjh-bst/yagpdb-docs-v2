@@ -442,11 +442,11 @@ Slash commands may define up to **25 options** (arguments). Each option has a:
 | Integer menu  | An integer with a fixed set of **choices**.                                                  |
 | Number        | A decimal number.                                                                            |
 | Number menu   | A number with a fixed set of **choices**.                                                    |
-| True/False    | A boolean.                                                                                    |
-| User          | A member of the server.                                                                       |
-| Channel       | A channel in the server.                                                                      |
-| Role          | A role in the server.                                                                         |
-| User or Role  | A mentionable, i.e. either a user or a role.                                                  |
+| True/False    | A boolean.                                                                                   |
+| User          | A member of the server.                                                                      |
+| Channel       | A channel in the server.                                                                     |
+| Role          | A role in the server.                                                                        |
+| Mentionable   | A mentionable, i.e. either a user or a role.                                                 |
 
 Depending on the chosen type, an option exposes extra constraints:
 
@@ -459,17 +459,17 @@ Depending on the chosen type, an option exposes extra constraints:
 
 Option values are exposed to the response in two ways, plus the command name:
 
-| Field             | Description                                                                                                                          |
-| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| `.Options`        | An `SDict` keyed by option name, holding the value the member supplied for each option. Optional options the member omits are absent. |
-| `.Args`           | An ordered slice of the supplied values, with the **command name at index 0** followed by the provided option values.               |
-| `.CmdArgs`        | The same ordered values as `.Args` but **without** the command name (i.e. `.Args` from index 1 onward).                             |
-| `.CommandName` / `.Cmd` | The slash command name that was run.                                                                                         |
-| `.IsSlashCommand` | `true` when the command was triggered by a slash command.                                                                          |
-| `.Interaction`    | The triggering [interaction](/docs/reference/custom-interactions#parsing-an-interaction) object.                                   |
-| `.InteractionData`| The raw application command interaction data from Discord.                                                                          |
+| Field             | Description                                                                                                                            |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `.Options`        | An `SDict` keyed by option name, holding the value the member supplied for each option. Optional options the member omits are absent.  |
+| `.Args`           | An ordered slice of the supplied values, with the **command name at index 0** followed by the provided option values.                  |
+| `.CmdArgs`        | The same ordered values as `.Args` but **without** the command name (i.e. `.Args` from index 1 onward).                                |
+| `.CommandName` / `.Cmd` | The slash command name that was run.                                                                                             |
+| `.IsSlashCommand` | `true` when the command was triggered by a slash command.                                                                              |
+| `.Interaction`    | The triggering [interaction](/docs/reference/custom-interactions#parsing-an-interaction) object.                                       |
+| `.InteractionData`| The raw application command interaction data from Discord.                                                                             |
 
-Snowflake-typed options are resolved to full objects: a `User` (or chosen-user `User or Role`) option yields a user object, a `Channel` option a channel object, and a `Role` (or chosen-role `User or Role`) option a role object.
+Snowflake-typed options are resolved to full objects: a `User` (or chosen-user `Mentionable`) option yields a user object, a `Channel` option a channel object, and a `Role` (or chosen-role `Mentionable`) option a role object.
 
 ```yag
 {{ $name := .Options.name }}
@@ -480,7 +480,7 @@ Hello {{ $target.Mention }}, {{ .User.Username }} says: {{ $name }}
 {{< callout context="note" title="Note: No source message" icon="outline/info-circle" >}}
 
 A slash command interaction has no source message, so YAGPDB synthesizes a minimal one.
-`.User`, `.Member`, and member-dependent functions such as `addRoleID` work as usual, but message-specific data such as `.Message.Content` is not meaningful.
+`.User`, `.Member`, and member-dependent functions such as `addRoleID` work as usual, but message-specific data inside `.Message` such as `.Message.Content` is not available because no Message Exists in the trigger context.
 
 {{< /callout >}}
 
