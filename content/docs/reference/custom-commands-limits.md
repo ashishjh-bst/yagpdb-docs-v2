@@ -8,7 +8,7 @@ Various limits in YAGPDB custom commands (CC) for smooth functioning of the bot 
 
 ## Overall
 
-- **Max amount of CCs:** 100/250 (free/prem)
+- **Max amount of CCs:** 100/500 (free/prem)
 - **Max CCs that can be triggered by a single action:** 3/5 (free/prem)
 - **Character limit:** 10k (5k for join/leave msg, warn dm, etc...)
 - **Limit writer:** 25kB

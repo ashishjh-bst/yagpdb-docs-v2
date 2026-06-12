@@ -15,7 +15,7 @@ For an in-depth guide, please refer to our [learning resources](/learn/advanced/
 ## The Basics
 
 Interactions within Discord allow server members to use alternative, built-in features to trigger bots to take action other than messages or reactions.
-These features include builtin buttons, dropdown selection menus, or submitting a modal (basically a pop-up form).
+These features include builtin buttons, dropdown selection menus, submitting a modal (basically a pop-up form), or running a [slash command](/docs/custom-commands/commands#slash-command).
 Within custom commands it is possible to not only create and customize these new interactive features, but respond to them as well, opening up new possibilities for ephemeral message responses, modals, and more.
 
 ### Interaction Lifetime
