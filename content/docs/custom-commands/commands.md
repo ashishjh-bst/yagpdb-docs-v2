@@ -510,7 +510,7 @@ The invoked subcommand name is exposed to the response as `.SubCommand`, and tha
 
 {{< callout context="caution" title="Warning: Subcommand limits" icon="outline/info-circle" >}}
 
-The number of subcommands per command shares the same limit as slash commands themselves: at most **3** on free servers, raised to **10** on [premium](/docs/welcome/premium) servers.
+You can have at most **3** subcommands *per slash command* on free servers, raised to **10** on [premium](/docs/welcome/premium) servers.
 
 {{< /callout >}}
 
