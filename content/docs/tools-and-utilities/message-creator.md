@@ -4,10 +4,9 @@ weight = 720
 description = "Build, send, and edit messages as the bot from the control panel."
 +++
 
-The Message Creator is a control panel tool for composing rich messages — content, embeds, and interactive components — and sending them to a channel **as the bot**, with a live Discord-style preview.
+The Message Creator is a control panel tool for composing rich messages --- content, embeds, and interactive components --- and sending them to a channel **as the bot**, with a live Discord-style preview.
 It can also edit messages the bot has already sent, which is handy for keeping a pinned announcement, rules post, or role menu up to date without rebuilding it from scratch.
-
-You can find it under **Tools → Message Creator** in the control panel sidebar.
+You can find it under the **Tools** group in the control panel sidebar.
 
 ![Overview of the Message Creator page.](message-creator-overview.png)
 
