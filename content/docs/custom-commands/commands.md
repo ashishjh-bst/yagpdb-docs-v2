@@ -554,7 +554,7 @@ Context menu commands have **no description and no options**.
 | `.CommandName` / `.Cmd` | The command name that was run.                                                                  |
 | `.IsContextMenuCommand` | `true` when the command was triggered by a context menu command.                                |
 | `.Interaction`          | The triggering [interaction](/docs/reference/custom-interactions#parsing-an-interaction) object.|
-| `.InteractionData`      | The raw application command interaction data from Discord.                                       |
+| `.InteractionData`      | The raw application command interaction data from Discord.                                      |
 
 ```yag
 {{ .Author.Mention }} gave a cookie to {{ .TargetUser.Mention }} 🍪
