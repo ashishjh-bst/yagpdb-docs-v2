@@ -588,7 +588,7 @@ It behaves identically to the [User Context Menu](#user-context-menu) trigger â€
 | `.Interaction`          | The triggering [interaction](/docs/reference/custom-interactions#parsing-an-interaction) object.|
 | `.InteractionData`      | The raw application command interaction data from Discord.                                      |
 
-Unlike the user context menu, the message type does have a `.Message` â€” it is the full right-clicked message (with its content, author, and so on). `.TargetUser` / `.TargetMember` refer to that message's author, and `.Author` is the member who invoked the command.
+Unlike the user context menu, the message type does have a `.Message` --- it is the full right-clicked message (with its content, author, and so on). `.TargetUser` / `.TargetMember` refer to that message's author, and `.Author` is the member who invoked the command.
 
 The same member-context restrictions as the [user context menu](#user-context-menu) apply: `.Member` and `.User` are not available, and `sendDM` is disabled.
 
