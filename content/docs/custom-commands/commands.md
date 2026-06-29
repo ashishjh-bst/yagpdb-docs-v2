@@ -565,7 +565,7 @@ Context menu commands have **no description and no options**.
 Similar to the [Role Change](#role-changes) trigger, `.Member` and `.User` are **not** available in context menu commands, and there is no source `.Message`.
 The person who invoked the command is exposed as `.Author`, and the right-clicked user is `.TargetUser` / `.TargetMember`.
 
-Any function that relies on `.Member` or `.User` will not work — for example, use `targetHasRole` instead of `hasRole`.
+Any function that relies on `.Member` or `.User` will not work --- for example, use `targetHasRole` instead of `hasRole`.
 `sendDM` is also disabled, so a context menu command cannot be used to DM an arbitrary target.
 
 {{< /callout >}}
