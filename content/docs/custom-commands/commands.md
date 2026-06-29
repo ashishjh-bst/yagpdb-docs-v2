@@ -528,7 +528,8 @@ If premium is removed and you are over the limit, only the lowest-ID commands re
 
 ##### User Context Menu
 
-This trigger type registers a native Discord **user [context menu command](https://support.discord.com/hc/en-us/articles/26501837786775-Slash-Commands-FAQ)** — an entry in the **Apps** submenu that appears when you right-click (or long-press) a user. The command executes against the selected user.
+This trigger type registers a native Discord **user [context menu command](https://support.discord.com/hc/en-us/articles/26501837786775-Slash-Commands-FAQ)** --- an entry in the **Apps** submenu that appears when you right-click (or long-press) a user.
+The command executes against the selected user.
 
 Like slash commands, context menu commands are [interactions](/docs/reference/custom-interactions), so the response is sent as the reply to the interaction, and you can use [Defer mode](#defer-mode), ephemeral responses, followups, components, and so on.
 
