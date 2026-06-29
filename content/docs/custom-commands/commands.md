@@ -632,7 +632,7 @@ Add a response with the plus button on the right of the response (**8**).
 The response supports the custom template script, allowing for more complex functionality such as assigning roles, getting data from users, sending messages to other channels, and more.
 Visit the Templates reference page to learn more.
 
-{{< link-card href="/docs/reference/templates/syntax-and-data" description="Templates" target="_blank" >}}
+{{< link-card href="/docs/reference/templates/syntax-and-data" description="Templates" >}}
 
 ### Custom Command Group
 

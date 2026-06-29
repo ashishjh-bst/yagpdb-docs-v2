@@ -41,7 +41,7 @@ Both message types support adding interactive components such as buttons and sel
 When the message is sent, YAGPDB adds the `templates-` prefix to each component's custom ID (unless you set one yourself).
 This lets the component trigger a [**Component** type custom command](/docs/custom-commands/commands#component), so you can wire up buttons and menus to run your own code.
 
-{{< link-card href="/docs/reference/custom-interactions" description="Custom Interactions" target="_blank" >}}
+{{< link-card href="/docs/reference/custom-interactions" description="Custom Interactions" >}}
 
 ## Limits and validation
 
