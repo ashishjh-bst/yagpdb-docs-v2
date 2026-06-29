@@ -465,6 +465,7 @@ Option values are exposed to the response in two ways, plus the command name:
 | `.Args`           | An ordered slice of the supplied values, with the **command name at index 0** followed by the provided option values.                  |
 | `.CmdArgs`        | The same ordered values as `.Args` but **without** the command name (i.e. `.Args` from index 1 onward).                                |
 | `.CommandName` / `.Cmd` | The slash command name that was run.                                                                                             |
+| `.SubCommand`     | The invoked [subcommand](#subcommands) name, or an empty string if the command does not use subcommands.                               |
 | `.IsSlashCommand` | `true` when the command was triggered by a slash command.                                                                              |
 | `.Interaction`    | The triggering [interaction](/docs/reference/custom-interactions#parsing-an-interaction) object.                                       |
 | `.InteractionData`| The raw application command interaction data from Discord.                                                                             |
@@ -484,6 +485,35 @@ A slash command interaction has no source message, so YAGPDB synthesizes a minim
 
 {{< /callout >}}
 
+###### Subcommands
+
+Instead of attaching options directly to the command, you can enable the **Use subcommands** toggle to split the command into named subcommands, invoked as `/your-command subcommand`.
+This is useful for commands that bundle several related actions, such as `/role add` and `/role remove`.
+
+When subcommands are enabled:
+
+- The command has **no top-level options** — Discord does not allow a command to have both subcommands and top-level options. Options are defined per subcommand instead.
+- Each subcommand has its own **Name** (1–32 lowercase characters: letters, numbers, dashes and underscores, unique within the command), **Description** (1–100 characters), and up to **25 options** configured exactly like the top-level options described above.
+- At least one subcommand (with a name and description) is required, otherwise the command will not save.
+
+The invoked subcommand name is exposed to the response as `.SubCommand`, and that subcommand's option values are available through `.Options`, `.Args`, and `.CmdArgs` just like a command without subcommands.
+
+```yag
+{{ if eq .SubCommand "add" }}
+  {{ addRoleID .Options.role }}
+  Added {{ (getRole .Options.role).Name }}.
+{{ else if eq .SubCommand "remove" }}
+  {{ removeRoleID .Options.role }}
+  Removed {{ (getRole .Options.role).Name }}.
+{{ end }}
+```
+
+{{< callout context="caution" title="Warning: Subcommand limits" icon="outline/info-circle" >}}
+
+You can have at most **3** subcommands *per slash command* on free servers, raised to **10** on [premium](/docs/welcome/premium) servers.
+
+{{< /callout >}}
+
 ###### Defer mode
 
 Slash commands use the same [Defer mode](/docs/reference/custom-interactions#responding-to-an-interaction) options as other interaction triggers, except for **Update Message Response**, which is not available (there is no prior message to update).
@@ -493,6 +523,87 @@ Slash commands use the same [Defer mode](/docs/reference/custom-interactions#res
 Servers may have at most **3 enabled** slash command custom commands, raised to **10** on [premium](/docs/welcome/premium) servers.
 Only enabled commands are registered with Discord and count against this limit.
 If premium is removed and you are over the limit, only the lowest-ID commands remain registered.
+
+{{< /callout >}}
+
+##### User Context Menu
+
+This trigger type registers a native Discord **user [context menu command](https://support.discord.com/hc/en-us/articles/26501837786775-Slash-Commands-FAQ)** --- an entry in the **Apps** submenu that appears when you right-click (or long-press) a user.
+The command executes against the selected user.
+
+Like slash commands, context menu commands are [interactions](/docs/reference/custom-interactions), so the response is sent as the reply to the interaction, and you can use [Defer mode](#defer-mode), ephemeral responses, followups, components, and so on.
+
+###### Command name
+
+For this trigger type, the **Trigger** (**4**) field is the command name shown in the Apps menu.
+
+- 1–32 characters.
+- Letters, numbers, **spaces**, dashes (`-`) and underscores (`_`). Unlike slash commands, the name may contain spaces and uppercase letters, and its capitalization is preserved.
+- The name must be unique among context menu commands of the same type in your server.
+
+Context menu commands have **no description and no options**.
+
+###### Accessing the target in the response
+
+| Field                   | Description                                                                                     |
+| ----------------------- | ----------------------------------------------------------------------------------------------- |
+| `.CommandType`          | `"user"` for this trigger type.                                                                 |
+| `.TargetUser`           | The user that was right-clicked.                                                                |
+| `.TargetMember`         | The member object for the right-clicked user.                                                   |
+| `.Author`               | The user who invoked the command.                                                               |
+| `.CommandName` / `.Cmd` | The command name that was run.                                                                  |
+| `.IsContextMenuCommand` | `true` when the command was triggered by a context menu command.                                |
+| `.Interaction`          | The triggering [interaction](/docs/reference/custom-interactions#parsing-an-interaction) object.|
+| `.InteractionData`      | The raw application command interaction data from Discord.                                      |
+
+```yag
+{{ .Author.Mention }} gave a cookie to {{ .TargetUser.Mention }} 🍪
+```
+
+{{< callout context="caution" title="Warning: No member context" icon="outline/info-circle" >}}
+
+Similar to the [Role Change](#role-changes) trigger, `.Member` and `.User` are **not** available in context menu commands, and there is no source `.Message`.
+The person who invoked the command is exposed as `.Author`, and the right-clicked user is `.TargetUser` / `.TargetMember`.
+
+Any function that relies on `.Member` or `.User` will not work --- for example, use `targetHasRole` instead of `hasRole`.
+`sendDM` is also disabled, so a context menu command cannot be used to DM an arbitrary target.
+
+{{< /callout >}}
+
+##### Message Context Menu
+
+This trigger type registers a native Discord **message [context menu command](https://support.discord.com/hc/en-us/articles/26501837786775-Slash-Commands-FAQ)** --- an entry in the **Apps** submenu that appears when you right-click (or long-press) a message.
+The command executes against the selected message.
+
+It behaves identically to the [User Context Menu](#user-context-menu) trigger --- same naming rules, no description or options, and the same interaction-based response --- except for what is exposed to the response:
+
+| Field                   | Description                                                                                     |
+| ----------------------- | ----------------------------------------------------------------------------------------------- |
+| `.CommandType`          | `"message"` for this trigger type.                                                              |
+| `.Message`              | The message that was right-clicked.                                                             |
+| `.TargetUser`           | The author of the right-clicked message.                                                        |
+| `.TargetMember`         | The member object for the message author.                                                       |
+| `.Author`               | The user who invoked the command.                                                               |
+| `.CommandName` / `.Cmd` | The command name that was run.                                                                  |
+| `.IsContextMenuCommand` | `true` when the command was triggered by a context menu command.                                |
+| `.Interaction`          | The triggering [interaction](/docs/reference/custom-interactions#parsing-an-interaction) object.|
+| `.InteractionData`      | The raw application command interaction data from Discord.                                      |
+
+Unlike the user context menu, the message type does have a `.Message` --- it is the full right-clicked message (with its content, author, and so on). `.TargetUser` / `.TargetMember` refer to that message's author, and `.Author` is the member who invoked the command.
+
+The same member-context restrictions as the [user context menu](#user-context-menu) apply: `.Member` and `.User` are not available, and `sendDM` is disabled.
+
+```yag
+{{ .Author.Mention }} pinned this message from {{ .TargetUser.Mention }}:
+> {{ .Message.Content }}
+```
+
+{{< callout context="caution" title="Warning: Context menu command limits" icon="outline/info-circle" >}}
+
+You may have at most **1 enabled** context menu command **of each type** (one user, one message), raised to **5 of each type** on [premium](/docs/welcome/premium) servers.
+Only enabled commands are registered with Discord and count against this limit.
+
+The **Update Message Response** defer mode is not available for context menu commands.
 
 {{< /callout >}}
 
@@ -521,7 +632,7 @@ Add a response with the plus button on the right of the response (**8**).
 The response supports the custom template script, allowing for more complex functionality such as assigning roles, getting data from users, sending messages to other channels, and more.
 Visit the Templates reference page to learn more.
 
-{{< link-card href="/docs/reference/templates/syntax-and-data" description="Templates" target="_blank" >}}
+{{< link-card href="/docs/reference/templates/syntax-and-data" description="Templates" >}}
 
 ### Custom Command Group
 
