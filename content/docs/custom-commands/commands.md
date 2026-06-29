@@ -572,7 +572,8 @@ Any function that relies on `.Member` or `.User` will not work --- for example, 
 
 ##### Message Context Menu
 
-This trigger type registers a native Discord **message [context menu command](https://support.discord.com/hc/en-us/articles/26501837786775-Slash-Commands-FAQ)** — an entry in the **Apps** submenu that appears when you right-click (or long-press) a message. The command executes against the selected message.
+This trigger type registers a native Discord **message [context menu command](https://support.discord.com/hc/en-us/articles/26501837786775-Slash-Commands-FAQ)** --- an entry in the **Apps** submenu that appears when you right-click (or long-press) a message.
+The command executes against the selected message.
 
 It behaves identically to the [User Context Menu](#user-context-menu) trigger --- same naming rules, no description or options, and the same interaction-based response --- except for what is exposed to the response:
 
