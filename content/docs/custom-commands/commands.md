@@ -586,7 +586,7 @@ It behaves identically to the [User Context Menu](#user-context-menu) trigger â€
 | `.CommandName` / `.Cmd` | The command name that was run.                                                                  |
 | `.IsContextMenuCommand` | `true` when the command was triggered by a context menu command.                                |
 | `.Interaction`          | The triggering [interaction](/docs/reference/custom-interactions#parsing-an-interaction) object.|
-| `.InteractionData`      | The raw application command interaction data from Discord.                                       |
+| `.InteractionData`      | The raw application command interaction data from Discord.                                      |
 
 Unlike the user context menu, the message type does have a `.Message` â€” it is the full right-clicked message (with its content, author, and so on). `.TargetUser` / `.TargetMember` refer to that message's author, and `.Author` is the member who invoked the command.
 
