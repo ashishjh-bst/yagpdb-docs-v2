@@ -475,18 +475,19 @@ Depending on the chosen type, an option exposes extra constraints:
 
 Option values are exposed to the response in two ways, plus the command name:
 
-| Field             | Description                                                                                                                            |
-| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| `.Options`        | An `SDict` keyed by option name, holding the value the member supplied for each option. Optional options the member omits are absent.  |
-| `.Args`           | An ordered slice of the supplied values, with the **command name at index 0** followed by the provided option values.                  |
-| `.CmdArgs`        | The same ordered values as `.Args` but **without** the command name (i.e. `.Args` from index 1 onward).                                |
-| `.CommandName` / `.Cmd` | The slash command name that was run.                                                                                             |
-| `.SubCommand`     | The invoked [subcommand](#subcommands) name, or an empty string if the command does not use subcommands.                               |
-| `.IsSlashCommand` | `true` when the command was triggered by a slash command.                                                                              |
-| `.SlashID`        | The Discord ID of the slash command.                                                                                                   |
-| `.SlashMention`   | A clickable mention of the slash command, in the form `</name:id>`. Members can click it to start typing the command.                  |
-| `.Interaction`    | The triggering [interaction](/docs/reference/custom-interactions#parsing-an-interaction) object.                                       |
-| `.InteractionData`| The raw application command interaction data from Discord.                                                                             |
+| Field                   | Description                                                                                                                                                   |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `.Options`              | An `SDict` keyed by option name, holding the value the member supplied for each option. Optional options the member omits are absent.                         |
+| `.Args`                 | An ordered slice of the supplied values, with the **command name at index 0** followed by the provided option values.                                         |
+| `.CmdArgs`              | The same ordered values as `.Args` but **without** the command name (i.e. `.Args` from index 1 onward).                                                       |
+| `.CommandName` / `.Cmd` | The slash command name that was run.                                                                                                                          |
+| `.SubCommand`           | The invoked [subcommand](#subcommands) name, or an empty string if the command does not use subcommands.                                                      |
+| `.IsSlashCommand`       | `true` when the command was triggered by a slash command.                                                                                                     |
+| `.SlashID`              | The Discord ID of the slash command.                                                                                                                          |
+| `.SlashMention`         | A clickable mention of the slash command, in the form `</name:id>`. Members can click it to start typing the command.                                         |
+| `.SubCommandMentions`   | An `SDict` of clickable mentions for **every** subcommand of this command, keyed by lowercase subcommand name. Empty if the command does not use subcommands. |
+| `.Interaction`          | The triggering [interaction](/docs/reference/custom-interactions#parsing-an-interaction) object.                                                              |
+| `.InteractionData`      | The raw application command interaction data from Discord.                                                                                                    |
 
 Snowflake-typed options are resolved to full objects: a `User` (or chosen-user `Mentionable`) option yields a user object, a `Channel` option a channel object, and a `Role` (or chosen-role `Mentionable`) option a role object.
 
@@ -515,6 +516,15 @@ When subcommands are enabled:
 - At least one subcommand (with a name and description) is required, otherwise the command will not save.
 
 The invoked subcommand name is exposed to the response as `.SubCommand`, and that subcommand's option values are available through `.Options`, `.Args`, and `.CmdArgs` just like a command without subcommands.
+
+`.SubCommandMentions` holds a clickable mention for every subcommand the command defines, keyed by lowercase name.
+It is the readable way to point someone at a sibling subcommand, since the member can click the result to start typing it:
+
+```yag
+{{ if eq .SubCommand "add" }}
+  Added. Use {{ index .SubCommandMentions "remove" }} to undo it.
+{{ end }}
+```
 
 ```yag
 {{ if eq .SubCommand "add" }}
